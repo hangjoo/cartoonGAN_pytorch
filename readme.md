@@ -2,13 +2,9 @@
 
 ## Abstract
 
----
-
 CartoonGAN implementation code with pytorch framework.
 
 ## Environment
-
----
 
 - Modules
   - python : 3.6.10
@@ -20,6 +16,7 @@ CartoonGAN implementation code with pytorch framework.
 - OS
   - Ubuntu 18.04-LTS
 - Folder Structure  
+```
   .  
   ├── Data  
   │   ├── cartoon_images  
@@ -39,10 +36,9 @@ CartoonGAN implementation code with pytorch framework.
       ├── Pretraining  
       └── Training  
       └── Sample_cartoon
+```
 
 ## How to train models
-
----
 
 If you want to train models, save the cartoon image set in cartoon_images directory.  
 Open the Train.py and edit the parameters at line 20-48. At this time, animation_name in line 20 must be same with directory name that the cartoon images are saved.
