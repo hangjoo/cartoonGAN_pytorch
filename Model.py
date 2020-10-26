@@ -7,7 +7,7 @@ from Utils import init_weights, print_model
 # nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, ... )
 
 class Generator(nn.Module):
-    def __init__(self):
+    def __init__(self, weight_PATH=None):
         super(Generator, self).__init__()
 
         # Activation Functions
@@ -130,7 +130,10 @@ class Generator(nn.Module):
         # tanh
 
         # Initialize weights
-        init_weights(self)
+        if weight_PATH is None:
+            init_weights(self)
+        else:
+            self.load_state_dict(torch.load(weight_PATH))
 
     def forward(self, x):
         # First Block
@@ -176,7 +179,7 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self):
+    def __init__(self, weight_PATH=None):
         super(Discriminator, self).__init__()
 
         # Activation Functions
@@ -211,7 +214,10 @@ class Discriminator(nn.Module):
         # Sigmoid
 
         # Initialize weights
-        init_weights(self)
+        if weight_PATH is None:
+            init_weights(self)
+        else:
+            self.load_state_dict(torch.load(weight_PATH))
 
     def forward(self, x):
         d1 = self.LeakyReLU(self.conv_01_1(x))
@@ -251,7 +257,7 @@ class InstanceNormalization(nn.Module):
 
 
 class VGG19(nn.Module):
-    def __init__(self, weight_PATH="./Saved_model/pretrained_vgg19.pth"):
+    def __init__(self, weight_PATH=None):
         super(VGG19, self).__init__()
         self.features = nn.Sequential(
             # Block 1
@@ -287,7 +293,8 @@ class VGG19(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        self.load_state_dict(torch.load(weight_PATH))
+        if weight_PATH is not None:
+            self.load_state_dict(torch.load(weight_PATH))
 
     def forward(self, x):
         y = self.features(x)
