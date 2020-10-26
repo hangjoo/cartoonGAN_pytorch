@@ -17,7 +17,7 @@ CartoonGAN implementation code with pytorch framework.
   - Ubuntu 18.04-LTS
 - Directory Structure
 
-``` python
+```
   .
   ├── Data
   │   └── train
