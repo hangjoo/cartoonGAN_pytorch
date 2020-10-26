@@ -15,18 +15,18 @@ CartoonGAN implementation code with pytorch framework.
   - Your GPU card must have at least 11GB of VRAM.
 - OS
   - Ubuntu 18.04-LTS
-- Folder Structure
+- Directory Structure
 
-```
+``` python
   .
   ├── Data
   │   └── train
   │       ├── cartoon
-  │       │   └── 1
+  │       │   └── 1   # Put cartoon images in here.
   │       ├── edge_smoothing
   │       │   └── 0
   │       └── real
-  │           └── 0
+  │           └── 0   # Put real images in here.
   ├── Saved_model
   ├── src
   └── Train
@@ -37,6 +37,6 @@ CartoonGAN implementation code with pytorch framework.
 
 ## How to train models
 
-1. If you want to train models, save the cartoon image set in "Data/cartoon/1/" directory. and also save the real image set in "Data/real/0" directory.
-2. Open the Train.py and edit the parameters at line 20-48.
+1. If you want to train models, put the cartoon image set in "Data/cartoon/1/" directory. and put the real image set in "Data/real/0" directory.
+2. Open the Train.py and edit the parameters at line 20-41.
 3. Execute Train.py. (It takes a very long time, so I recommend using it as a background task.)
