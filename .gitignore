@@ -2,4 +2,5 @@
 .vscode/
 *.docx
 *.pdf
-.vscode/settings.json
+*.json
+Translate.py
