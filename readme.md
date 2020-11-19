@@ -2,26 +2,26 @@
 
 ## Abstract
 
-CartoonGAN implementation code with pytorch framework.
+CartoonGAN(in CVRP2017) implementation code with pytorch framework.
 
 ## Environment
 
-1. ### Modules
+### 1. Modules
 
     - python : 3.6.10
     - pytorch : 1.6.0
     - torchvision : 0.7.0
 
-2. ### GPU
+### 2. GPU
 
-    - k80 (Use Microsoft Azure VM server)
+    - k80 (Microsoft Azure VM server)
     - Your GPU card must have at least 11GB of VRAM.
 
-3. ### OS
+### 3. OS
 
     - Ubuntu 18.04-LTS
 
-4. ### Directory Structure
+### 4. Directory Structure
 
 ```
   .
@@ -76,3 +76,22 @@ The intermediate validatino results and weght files(every 5 epoch) created durin
 
 ## Our train results
 
+We used cartoon image set from *Tom and Jerry* animation to train models. And Flickr 8k dataset is used for real image set. Each label contains about 20,000 images.
+
+### _Initialize_
+
+|               Original                |                  Epoch 1                   |                  Epoch 5                   |                  Epoch 10                  |
+| :-----------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
+| ![Original_1](./src/001_original.png) | ![Epoch_1_1](./src/001_vgg19_epoch_01.png) | ![Epoch_4_1](./src/001_vgg19_epoch_05.png) | ![Epoch_9_1](./src/001_vgg19_epoch_10.png) |
+| ![Original_2](./src/002_original.png) | ![Epoch_1_2](./src/002_vgg19_epoch_01.png) | ![Epoch_4_2](./src/002_vgg19_epoch_05.png) | ![Epoch_9_2](./src/002_vgg19_epoch_10.png) |
+| ![Original_3](./src/003_original.png) | ![Epoch_1_3](./src/003_vgg19_epoch_01.png) | ![Epoch_4_3](./src/003_vgg19_epoch_05.png) | ![Epoch_9_3](./src/003_vgg19_epoch_10.png) |
+| ![Original_4](./src/004_original.png) | ![Epoch_1_4](./src/004_vgg19_epoch_01.png) | ![Epoch_4_4](./src/004_vgg19_epoch_05.png) | ![Epoch_9_4](./src/004_vgg19_epoch_10.png) |
+
+### _After Train_
+
+|               Origianl                |                Converted                 |
+| :-----------------------------------: | :--------------------------------------: |
+| ![Original_1](./src/001_original.png) | ![converted_1](./src/001_main_train.png) |
+| ![Original_2](./src/002_original.png) | ![converted_2](./src/002_main_train.png) |
+| ![Original_3](./src/003_original.png) | ![converted_3](./src/003_main_train.png) |
+| ![Original_4](./src/004_original.png) | ![converted_4](./src/004_main_train.png) |
