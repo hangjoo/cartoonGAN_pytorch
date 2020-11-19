@@ -29,33 +29,41 @@ def print_model(model):
     print("Total number of parameters: %d" % params_num)
 
 
-def video2images(src_path, dst_path, size=(1280, 720), LR_reverse=True):
+def video2images(src_path, dst_path, fps=30, size=None, LR_reverse=True):
     os.makedirs(dst_path, exist_ok=True)
+
+    video_name = os.path.splitext(os.path.basename(src_path))[0]
 
     vidcap = cv2.VideoCapture(src_path)
     i = 1
     while vidcap.isOpened():
         ret, img = vidcap.read()
-        if int(vidcap.get(1)) % 30 == 0:
-            img = cv2.resize(img, dsize=size, interpolation=cv2.INTER_AREA)
-            if LR_reverse:
-                if int(vidcap.get(1)) % 60 == 0:
-                    img = cv2.flip(img, 1)
+        if ret:
+            if int(vidcap.get(1)) % fps == 0:
+                if int(vidcap.get(1) / fps) in [0, 1, 2]:
+                    # skip first 3 and last 3 frames. (These are usually black images.)
+                    continue
+                if size is not None and img.shape[0] >= size[0] and img.shape[1] >= size[1]:
+                    img = cv2.resize(img, dsize=size, interpolation=cv2.INTER_AREA)
+                if LR_reverse:
+                    if int(vidcap.get(1)) % (2 * fps) == 0:
+                        img = cv2.flip(img, 1)
 
-            dst_name = "image_B_%05d" % (i) + ".jpg"
-            dst = os.path.join(dst_path, dst_name)
-            cv2.imwrite(dst, img)
-            print("%s is saved." % (dst_name))
-            i += 1
+                dst_name = video_name + "_%05d" % (i) + ".jpg"
+                dst = os.path.join(dst_path, dst_name)
+                cv2.imwrite(dst, img)
+                print("%s is saved." % (dst_name))
+                i += 1
         if not ret:
+            print("Unexpected error occured.")
             break
 
 
-def edge_smoothing(src_path, dst_path, size=None):
+def edge_smoothing(src_path, dst_path, size=None, pad_size=5):
     os.makedirs(dst_path, exist_ok=True)
     file_list = os.listdir(src_path)
 
-    kernel_size = 7
+    kernel_size = pad_size
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
 
     gauss = cv2.getGaussianKernel(kernel_size, 0)
@@ -68,12 +76,10 @@ def edge_smoothing(src_path, dst_path, size=None):
 
     for file_idx, file_name in enumerate(file_list):
         rgb_img = cv2.imread(os.path.join(src_path, file_name))  # channels = 3  (RGB image)
-        gray_img = cv2.imread(
-            os.path.join(src_path, file_name), 0
-        )  # channels = 1  (Gray image)
+        gray_img = cv2.imread(os.path.join(src_path, file_name), 0)  # channels = 1  (Gray image)
         if size is not None:
-            rgb_img = cv2.resize(rgb_img, size)
-            gray_img = cv2.resize(gray_img, size)
+            rgb_img = cv2.resize(rgb_img, size, interpolation=cv2.INTER_AREA)
+            gray_img = cv2.resize(gray_img, size, interpolation=cv2.INTER_AREA)
 
         pad_img = np.pad(
             rgb_img,
@@ -85,9 +91,7 @@ def edge_smoothing(src_path, dst_path, size=None):
             mode="reflect",
         )  # if the size of img is (H, W), the size of pad_img is (H + kernel_size, W + kernel_size).
 
-        edges = cv2.Canny(
-            gray_img, 20, 130
-        )  # cv2.Canny(image, low_threshold, high_threshold)
+        edges = cv2.Canny(gray_img, 20, 130)  # cv2.Canny(image, low_threshold, high_threshold)
         dilation = cv2.dilate(edges, kernel)
 
         gauss_img = np.copy(rgb_img)
@@ -137,4 +141,4 @@ def edge_smoothing(src_path, dst_path, size=None):
 
 
 if __name__ == "__main__":
-    edge_smoothing(src_path="./edge_test/src", dst_path="./edge_test/dst")
+    pass

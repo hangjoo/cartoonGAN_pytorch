@@ -10,14 +10,14 @@ from torchvision import transforms
 from torchvision.datasets import ImageFolder
 
 from Utils import edge_smoothing
-from Model import Generator, Discriminator, VGG19
+from Models import Generator, Discriminator, VGG19, Inception_v3
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 if torch.backends.cudnn.enabled:
     torch.backends.cudnn.benchmark = True
 
 # Parameters ==================================================================
-animation_name = "Naruto_3"
+animation_name = ""
 
 data_PATH = "./Train/Data"
 vgg_PATH = "./Saved_model/pretrained_vgg19.pth"
@@ -38,7 +38,7 @@ lrD = 0.0002
 optim_beta1 = 0.5
 optim_beta2 = 0.999
 
-con_lambda = 10
+con_lambda = 9  # default value: 10
 
 # Load Data Sets ==============================================================
 real_transform = transforms.Compose(
@@ -51,8 +51,7 @@ real_transform = transforms.Compose(
 
 cartoon_transform = transforms.Compose(
     [
-        transforms.Resize(size=(int(256 * 1.5), int(256 * 1.5))),
-        transforms.RandomCrop(size=(256, 256)),
+        transforms.Resize(size=(256, 256)),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)),
     ]
@@ -71,28 +70,25 @@ data_no_edge = ImageFolder(os.path.join(data_PATH, "edge_smoothing"), cartoon_tr
 data_validation = ImageFolder(os.path.join(data_PATH, "validation"), real_transform)
 
 loader_real = DataLoader(data_real, batch_size=batch_size, shuffle=True, drop_last=True)
-loader_cartoon = DataLoader(
-    data_cartoon, batch_size=batch_size, shuffle=True, drop_last=True
-)
-loader_no_edge = DataLoader(
-    data_no_edge, batch_size=batch_size, shuffle=True, drop_last=True
-)
-loader_validation = DataLoader(
-    data_validation, batch_size=1, shuffle=False, drop_last=False
-)
+loader_cartoon = DataLoader(data_cartoon, batch_size=batch_size, shuffle=True, drop_last=True)
+loader_no_edge = DataLoader(data_no_edge, batch_size=batch_size, shuffle=True, drop_last=True)
+loader_validation = DataLoader(data_validation, batch_size=1, shuffle=False, drop_last=False)
 
 # Models ======================================================================
 G = Generator()
 D = Discriminator()
-P_VGG19 = VGG19(weight_PATH=vgg_PATH)
+P_VGG19 = VGG19(init_weights_path=vgg_PATH)
+# P_Inception_v3 = Inception_v3(init_weights_path=inception_PATH)
 
 G.to(device)
 D.to(device)
 P_VGG19.to(device)
+# P_Inception_v3.to(device)
 
 G.train()
 D.train()
 P_VGG19.eval()
+# P_Inception_v3.eval()
 
 # Loss ========================================================================
 BCE_loss = nn.BCELoss().to(device)
@@ -116,9 +112,12 @@ D_scheduler = optim.lr_scheduler.MultiStepLR(
 # Pre-train Generator =========================================================
 if not pretrained:
     print("======= Generator Pretraining Start =======")
+
     start_time = time.time()
+
     pretrain_save_PATH = "./Train/Pretraining"
     os.makedirs(pretrain_save_PATH, exist_ok=True)
+
     for epoch_idx in range(1, pre_train_epoch + 1):
         G.train()
         epoch_start_time = time.time()
@@ -157,10 +156,13 @@ if not pretrained:
         # Save original and generated image in each epoch.
         with torch.no_grad():
             G.eval()
-            for idx, (x, _) in enumerate(loader_real):
+
+            for idx, (x, _) in enumerate(loader_validation):
                 x = x.to(device)
                 G_recon = G(x)
+
                 result = torch.cat((x[0], G_recon[0]), 2)
+
                 plt.imsave(
                     os.path.join(
                         pretrain_save_PATH,
@@ -168,12 +170,17 @@ if not pretrained:
                     ),
                     (result.cpu().numpy().transpose(1, 2, 0) + 1) / 2,
                 )
-                if idx == 4:
-                    break
 
     total_time = time.time() - start_time
 
-    torch.save(G.state_dict(), pre_PATH)
+    torch.save(
+        {
+            "epoch": pre_train_epoch,
+            "model_state_dict": G.state_dict(),
+            "optimizer_state_dict": G_optimizer.state_dict(),
+        },
+        os.path.join(pre_PATH),
+    )
 
 else:
     print("======= Generator already pretrained =======")
@@ -187,7 +194,7 @@ start_time = time.time()
 train_save_PATH = os.path.join("./Train/Training", animation_name)
 os.makedirs(train_save_PATH, exist_ok=True)
 
-progress_hist = open(os.path.join(train_save_PATH, animation_name + "_progress.txt", "a"))
+progress_hist = open(os.path.join(train_save_PATH, animation_name + "_progress.txt"), "a")
 
 checkpoint = 0
 
@@ -196,11 +203,7 @@ fake = torch.zeros(batch_size, 1, 256 // 4, 256 // 4).to(device)
 edge = torch.full(size=(batch_size, 1, 256 // 4, 256 // 4), fill_value=0.2).to(device)
 
 for idx in range(1, train_epoch + 1):
-    if os.path.isfile(
-        os.path.join(
-            train_save_PATH, "Epoch_%03d" % (idx), "Epoch_%03d_Generator.pth" % (idx)
-        )
-    ) and os.path.isfile(
+    if os.path.isfile(os.path.join(train_save_PATH, "Epoch_%03d" % (idx), "Epoch_%03d_Generator.pth" % (idx))) and os.path.isfile(
         os.path.join(
             train_save_PATH,
             "Epoch_%03d" % (idx),
@@ -230,10 +233,7 @@ for idx in range(1, train_epoch + 1):
 
         checkpoint = Gen_checklist["epoch"]
 
-        print(
-            "%03d-Epoch model save file exists. Epoch_%03d_Generator.pth, Epoch_%03d_Discriminator.pth is loaded."
-            % (idx, idx, idx)
-        )
+        print("%03d-Epoch model save file exists. Epoch_%03d_Generator.pth, Epoch_%03d_Discriminator.pth is loaded." % (idx, idx, idx))
 
 
 for epoch_idx in range(1, train_epoch + 1):
@@ -254,24 +254,23 @@ for epoch_idx in range(1, train_epoch + 1):
         x, y, e = x.to(device), y.to(device), e.to(device)
 
         # Train Discriminator
-        if epoch_idx % 3 == 1:
-            D_optimizer.zero_grad()
+        D_optimizer.zero_grad()
 
-            D_real = D(y)
-            D_real_loss = BCE_loss(D_real, real)
+        D_real = D(y)
+        D_real_loss = BCE_loss(D_real, real)
 
-            trans_x = G(x)
-            D_fake = D(trans_x)
-            D_fake_loss = BCE_loss(D_fake, fake)
+        trans_x = G(x)
+        D_fake = D(trans_x)
+        D_fake_loss = BCE_loss(D_fake, fake)
 
-            D_none_edge = D(e)
-            D_none_edge_loss = BCE_loss(D_none_edge, fake)
+        D_none_edge = D(e)
+        D_none_edge_loss = BCE_loss(D_none_edge, edge)
 
-            Dis_loss = D_real_loss + D_fake_loss + D_none_edge_loss
-            Dis_losses.append(Dis_loss.item())
+        Dis_loss = D_real_loss + D_fake_loss + D_none_edge_loss
+        Dis_losses.append(Dis_loss.item())
 
-            Dis_loss.backward()
-            D_optimizer.step()
+        Dis_loss.backward()
+        D_optimizer.step()
 
         # Train Generator
         G_optimizer.zero_grad()
@@ -280,7 +279,7 @@ for epoch_idx in range(1, train_epoch + 1):
         D_fake = D(trans_x)
         Adv_loss = BCE_loss(D_fake, real)
 
-        x_feature = P_VGG19((x + 1) / 2)
+        x_feature = P_VGG19((x + 1) / 2)  # (x + 1) / 2 : Preprocessing for VGG19.
         trans_feature = P_VGG19((trans_x + 1) / 2)
         Con_loss = con_lambda * L1_loss(trans_feature, x_feature.detach())
 
@@ -357,12 +356,27 @@ for epoch_idx in range(1, train_epoch + 1):
                     "model_state_dict": D.state_dict(),
                     "optimizer_state_dict": D_optimizer.state_dict(),
                 },
-                os.path.join(
-                    epoch_save_PATH, "Epoch_%03d_Discriminator.pth" % (epoch_idx)
-                ),
+                os.path.join(epoch_save_PATH, "Epoch_%03d_Discriminator.pth" % (epoch_idx)),
             )
 
 total_time = time.time() - start_time
+
+torch.save(
+    {
+        "epoch": train_epoch,
+        "model_state_dict": G.state_dict(),
+        "optimizer_state_dict": G_optimizer.state_dict(),
+    },
+    os.path.join(gen_PATH),
+)
+torch.save(
+    {
+        "epoch": train_epoch,
+        "model_state_dict": D.state_dict(),
+        "optimizer_state_dict": D_optimizer.state_dict(),
+    },
+    os.path.join(dis_PATH),
+)
 
 print("======= Congratulations! Training is all done. =======")
 print("=======         total time taken : %.2f        =======" % (total_time))
