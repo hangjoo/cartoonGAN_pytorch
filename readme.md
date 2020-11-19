@@ -2,7 +2,7 @@
 
 ## Abstract
 
-CartoonGAN(in CVRP2017) implementation code with pytorch framework.
+[CartoonGAN](https://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)(in CVRP2018) implementation code with pytorch framework.
 
 ## Environment
 
