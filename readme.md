@@ -2,7 +2,7 @@
 
 ## Abstract
 
-[CartoonGAN](https://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)(in CVRP2018) implementation code with pytorch framework.
+[CartoonGAN](https://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)(in CVRP2018) implementation code with pytorch.
 
 ## Environment
 
@@ -25,7 +25,7 @@
 
 ```
   .
-  ├── Data
+  ├── Data  
   │   └── train
   │       ├── cartoon
   │       │   └── 1
@@ -76,9 +76,9 @@ The intermediate validatino results and weght files(every 5 epoch) created durin
 
 ## Our train results
 
-We used cartoon image set from *Tom and Jerry* animation to train models. And Flickr 8k dataset is used for real image set. Each label contains about 20,000 images.
+We used cartoon image set from *Tom and Jerry* animation to train models. And Flickr 8k dataset was used for real image set. Each label contains about 20,000 images.
 
-### _Initialize_
+### _Initialization phase_
 
 |               Original                |                  Epoch 1                   |                  Epoch 5                   |                  Epoch 10                  |
 | :-----------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
