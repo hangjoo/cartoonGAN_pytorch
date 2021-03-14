@@ -76,7 +76,7 @@ The intermediate validation results and weight files(every 5 epoch) created duri
 
 ## Our train results
 
-We used cartoon image set from *Tom and Jerry* animation to train models. And Flickr 8k dataset was used for real image set. Each label contains about 20,000 images.
+We used cartoon image set from *Tom and Jerry* animation to train models. And Flickr 30k dataset was used for real image set. Each label contains about 20,000 images.
 
 ### _Initialization phase_
 
