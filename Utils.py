@@ -72,8 +72,6 @@ def edge_smoothing(src_path, dst_path, size=None, pad_size=5):
     #  [0.5 ],    *   [[0.25, 0.5, 0.25]] =    [0.125 , 0.25  , 0.125 ],  => gauss
     #  [0.25]]                                 [0.0625, 0.125 , 0.0625]]
 
-    normal_kernel = np.full((kernel_size, kernel_size), 1 / (kernel_size * kernel_size))
-
     for file_idx, file_name in enumerate(file_list):
         rgb_img = cv2.imread(os.path.join(src_path, file_name))  # channels = 3  (RGB image)
         gray_img = cv2.imread(os.path.join(src_path, file_name), 0)  # channels = 1  (Gray image)

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from Utils import init_weights, print_model
+from Utils import init_weights
 
 
 # nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, ... )
@@ -536,7 +536,7 @@ class InstanceNormalization(nn.Module):
 
 if __name__ == "__main__":
     avatar = Inception_v3()
-    origin = inception_v3()
+    origin = Inception_v3()
 
     def sanity_check(src_state_dict, tgt_state_dict):
         print("======== Sanity Check ========")
