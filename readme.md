@@ -2,26 +2,26 @@
 
 ## Abstract
 
-[CartoonGAN](https://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)(in CVRP2018) implementation code with pytorch.
+[CartoonGAN](https://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)(in CVPR2018) implementation code with pytorch.
 
 ## Environment
 
-### 1. Modules
+### 1.  Modules
 
     - python : 3.6.10
     - pytorch : 1.6.0
     - torchvision : 0.7.0
 
-### 2. GPU
+### 2.  GPU
 
     - k80 (Microsoft Azure VM server)
     - Your GPU card must have at least 11GB of VRAM.
 
-### 3. OS
+### 3.  OS
 
     - Ubuntu 18.04-LTS
 
-### 4. Directory Structure
+### 4.  Directory Structure
 
 ```
   .
@@ -62,11 +62,11 @@ Only used for other tasks.
 
 ### _"./Train/Pretraining":_
 
-The intermediate results and weght files created during the pre-training process are saved.
+The intermediate results and weight files created during the pre-training process are saved.
 
 ### _"./Train/Training":_
 
-The intermediate validatino results and weght files(every 5 epoch) created during the main-training process are saved.
+The intermediate validation results and weight files(every 5 epoch) created during the main-training process are saved.
 
 ## How to train models
 
@@ -89,7 +89,7 @@ We used cartoon image set from *Tom and Jerry* animation to train models. And Fl
 
 ### _After Train_
 
-|               Origianl                |                Converted                 |
+|               Original                |                Converted                 |
 | :-----------------------------------: | :--------------------------------------: |
 | ![Original_1](./src/001_original.png) | ![converted_1](./src/001_main_train.png) |
 | ![Original_2](./src/002_original.png) | ![converted_2](./src/002_main_train.png) |
