@@ -78,7 +78,7 @@ The intermediate validation results and weight files(every 5 epoch) created duri
 
 We used cartoon image set from *Tom and Jerry* animation to train models. And Flickr 30k dataset was used for real image set. Each label contains about 20,000 images.
 
-### _Initialization phase_
+### Initialization phase (section [3.3] in paper)
 
 |               Original                |                  Epoch 1                   |                  Epoch 5                   |                  Epoch 10                  |
 | :-----------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
@@ -87,7 +87,7 @@ We used cartoon image set from *Tom and Jerry* animation to train models. And Fl
 | ![Original_3](./src/003_original.png) | ![Epoch_1_3](./src/003_vgg19_epoch_01.png) | ![Epoch_4_3](./src/003_vgg19_epoch_05.png) | ![Epoch_9_3](./src/003_vgg19_epoch_10.png) |
 | ![Original_4](./src/004_original.png) | ![Epoch_1_4](./src/004_vgg19_epoch_01.png) | ![Epoch_4_4](./src/004_vgg19_epoch_05.png) | ![Epoch_9_4](./src/004_vgg19_epoch_10.png) |
 
-### _After Train_
+### After Train
 
 |               Original                |                Converted                 |
 | :-----------------------------------: | :--------------------------------------: |
