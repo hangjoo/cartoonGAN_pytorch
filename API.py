@@ -4,8 +4,7 @@ import torchvision.transforms.functional as F
 
 from Models import Generator
 
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = "cpu"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 if torch.backends.cudnn.enabled:
     torch.backends.cudnn.benchmark = True
 
