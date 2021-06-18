@@ -87,7 +87,7 @@ We used cartoon image set from *Tom and Jerry* animation to train models. And Fl
 | ![Original_3](./src/003_original.png) | ![Epoch_1_3](./src/003_vgg19_epoch_01.png) | ![Epoch_4_3](./src/003_vgg19_epoch_05.png) | ![Epoch_9_3](./src/003_vgg19_epoch_10.png) |
 | ![Original_4](./src/004_original.png) | ![Epoch_1_4](./src/004_vgg19_epoch_01.png) | ![Epoch_4_4](./src/004_vgg19_epoch_05.png) | ![Epoch_9_4](./src/004_vgg19_epoch_10.png) |
 
-### After Train
+### Training Results
 
 |               Original                |                Converted                 |
 | :-----------------------------------: | :--------------------------------------: |
